@@ -10,7 +10,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-
 	"time"
 )
 
@@ -24,6 +23,7 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+
 		f, err := os.OpenFile("output", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 		if err != nil {
 			fmt.Println(err.Error())
@@ -36,15 +36,53 @@ func main() {
 			return
 		}
 
-		io.WriteString(f, string(body))
-		//
-		//err = json.NewEncoder(w).Encode(Retry{
-		//	RetryAfter: time.Minute,
-		//})
-		//if err != nil {
-		//	fmt.Println(err.Error())
-		//	return
-		//}
+		io.WriteString(f, string(body)+"called /"+"\n")
+
+	})
+
+	r.HandleFunc("/launch", func(w http.ResponseWriter, r *http.Request) {
+		f, err := os.OpenFile("output", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		io.WriteString(f, string(body)+"called /launch"+"\n")
+
+	})
+	r.HandleFunc("/scaleup", func(w http.ResponseWriter, r *http.Request) {
+		f, err := os.OpenFile("output", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		io.WriteString(f, string(body)+"called /scaleup"+"\n")
+
+	})
+	r.HandleFunc("/scaledown", func(w http.ResponseWriter, r *http.Request) {
+		f, err := os.OpenFile("output", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		io.WriteString(f, string(body)+"called /scaledown"+"\n")
 
 	})
 
